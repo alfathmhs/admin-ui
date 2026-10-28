@@ -1,35 +1,40 @@
-import UserCard from './UserCard'
+import { useEffect, useState } from "react";
+import UserCard from "./UserCard";
+import { getUsers } from "./Services";
 
-function Exercise() {
-return (
-  <>
+interface User {
+  name: string;
+  email: string;
+  city: string;
+  street: string;
+  [key: string]: any;
+}
+
+export default function Exercise() {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getUsers();
+        setUsers(data);
+      } catch (error: any) {
+        console.error("[Component] Gagal menampilkan data:", error.message);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
         User Cards
       </h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        <UserCard
-          name="April"
-          email="april@gmail.com"
-          street="Jl. Imam Bonjol"
-          city="Semarang"
-        />
-        <UserCard
-          name="Yani"
-          email="yani@gmail.com"
-          street="Jl. Indraprasta"
-          city="Ungaran"
-        />
-        <UserCard
-          name="Safitri"
-          email="safitri@gmail.com"
-          street="Jl. Pemuda"
-          city="Kendal"
-        />
+        {users.map((user, index) => (
+          <UserCard key={index} {...user} />
+        ))}
       </div>
     </div>
-  </>
-);
+  );
 }
-
-export default Exercise;

@@ -1,12 +1,15 @@
 import { useState } from "react";
 
-function UseCard(props: {
+interface UserCardProps {
   name: string;
   email: string;
   street: string;
   city: string;
-}) {
-  const { name, email, street, city } = props;
+  [key: string]: any;
+}
+
+export default function UserCard(props: UserCardProps) {
+  const { name, email, street, city, ...rest } = props;
   const [clicked, setClicked] = useState(false);
 
   return (
@@ -18,8 +21,13 @@ function UseCard(props: {
       <p className="text-gray-600">
         <span className="font-medium">Address:</span> {street}, {city}
       </p>
+      {Object.entries(rest).map(([key, value]) => (
+        <p key={key} className="text-gray-600">
+          <span className="font-medium capitalize">{key}:</span> {String(value)}
+        </p>
+      ))}
       <button
-        className={`${clicked ? "bg-green-600" : "bg-gray-600"} text-white p-2 rounded-md`}
+        className={`mt-4 ${clicked ? "bg-green-600" : "bg-gray-600"} text-white p-2 rounded-md`}
         onClick={() => setClicked(true)}
       >
         {clicked ? "Tombol sudah diklik" : "Silakan Klik"}
@@ -27,5 +35,3 @@ function UseCard(props: {
     </div>
   );
 }
-
-export default UseCard;
